@@ -47,8 +47,30 @@ func main() {
 		}
 		fmt.Printf("Files: %d\n", len(fileList))
 		for _, file := range fileList {
-			fmt.Printf("File: %s\n", file.Filename)
+			fmt.Printf("File: %s - %s (%d)\n", file.Id, file.Filename, file.Bytes)
 		}
+	case "upload":
+		if len(os.Args) < 3 || os.Args[2] == "" {
+			exit1("Usage: go run example.go upload <filepath>")
+		}
+		filename := os.Args[2]
+		if len(filename) < 7 || filename[len(filename)-6:] != ".jsonl" {
+			exit1("error file name must end with .jsonl")
+		}
+		file, err := api.FileUpload(apiKey, filename)
+		if err != nil {
+			exit1(fmt.Errorf("%s; error api file upload", err).Error())
+		}
+		fmt.Printf("File: %s - %s\n", file.Id, file.Filename)
+	case "delete":
+		if len(os.Args) < 3 || os.Args[2] == "" {
+			exit1("Usage: go run example.go delete <filename>")
+		}
+		filename := os.Args[2]
+		if err := api.FileDelete(apiKey, filename); err != nil {
+			exit1(fmt.Errorf("%s; error api file delete", err).Error())
+		}
+		fmt.Printf("File deleted: %s\n", filename)
 	default:
 		exit1(fmt.Sprintf("Unknown command: %s", os.Args[1]))
 	}

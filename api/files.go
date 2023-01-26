@@ -1,9 +1,14 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"os"
 	"sort"
+	"strings"
 )
 
 func FileList(apiKey string) ([]File, error) {
@@ -25,4 +30,60 @@ func FileList(apiKey string) ([]File, error) {
 		return respObj.Data[i].Filename < respObj.Data[j].Filename
 	})
 	return respObj.Data, nil
+}
+
+func FileUpload(apiKey, filename string) (*File, error) {
+	fh, err := os.Open(filename)
+	if err != nil {
+		return nil, fmt.Errorf("%w; error opening file", err)
+	}
+	defer fh.Close()
+	var bodyBuf = new(bytes.Buffer)
+	bodyWriter := multipart.NewWriter(bodyBuf)
+	bodyWriter.WriteField("purpose", "fine-tune")
+	parts := strings.Split(filename, "/")
+	fileWriter, err := bodyWriter.CreateFormFile("file", parts[len(parts)-1])
+	if err != nil {
+		return nil, fmt.Errorf("%w; error creating form file", err)
+	}
+	if _, err = io.Copy(fileWriter, fh); err != nil {
+		return nil, fmt.Errorf("%w; error copying file to form", err)
+	}
+	bodyWriter.Close()
+	resp, err := HttpRequest{
+		Url:         UrlFiles,
+		ApiKey:      apiKey,
+		Data:        bodyBuf.Bytes(),
+		ContentType: bodyWriter.FormDataContentType(),
+	}.Post()
+	if err != nil {
+		return nil, fmt.Errorf("%w; error files upload api request", err)
+	}
+	fmt.Printf("resp: %s\n", resp)
+	var respFile = new(File)
+	if err := json.Unmarshal([]byte(resp), respFile); err != nil {
+		return nil, fmt.Errorf("%w; error json unmarshalling file upload api response", err)
+	}
+	return respFile, nil
+}
+
+func FileDelete(apiKey, filename string) error {
+	if !strings.HasPrefix(filename, "file-") {
+		return fmt.Errorf("invalid filename")
+	}
+	resp, err := HttpRequest{
+		Url:    UrlFiles + "/" + filename,
+		ApiKey: apiKey,
+	}.Delete()
+	if err != nil {
+		return fmt.Errorf("%w; error delete file api request", err)
+	}
+	var respObj struct {
+		Object  string
+		Deleted bool
+	}
+	if err := json.Unmarshal([]byte(resp), &respObj); err != nil {
+		return fmt.Errorf("%w; error json unmarshalling delete file api response", err)
+	}
+	return nil
 }

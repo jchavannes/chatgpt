@@ -19,15 +19,24 @@ const (
 )
 
 type HttpRequest struct {
-	Url    string
-	Data   []byte
-	ApiKey string
+	Url         string
+	Data        []byte
+	ApiKey      string
+	ContentType string
 }
 
 func (r HttpRequest) Get() (string, error) {
 	resp, err := r.do(http.MethodGet)
 	if err != nil {
 		return "", fmt.Errorf("%w; error get api request", err)
+	}
+	return resp, nil
+}
+
+func (r HttpRequest) Delete() (string, error) {
+	resp, err := r.do(http.MethodDelete)
+	if err != nil {
+		return "", fmt.Errorf("%w; error delete api request", err)
 	}
 	return resp, nil
 }
@@ -46,8 +55,11 @@ func (r HttpRequest) do(method string) (string, error) {
 		return "", fmt.Errorf("%w; error creating api request", err)
 	}
 	req.Header.Set("Authorization", "Bearer "+r.ApiKey)
-	if len(r.Data) > 0 {
-		req.Header.Set("Content-Type", "application/json")
+	if len(r.Data) > 0 && r.ContentType == "" {
+		r.ContentType = "application/json"
+	}
+	if r.ContentType != "" {
+		req.Header.Set("Content-Type", r.ContentType)
 	}
 	client := &http.Client{}
 	resp, err := client.Do(req)
