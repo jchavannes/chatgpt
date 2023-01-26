@@ -1,13 +1,13 @@
 package api
 
-type OpenAiBaseObject struct {
+type baseObject struct {
 	Id      string `json:"id"`
 	Object  string `json:"object"`
 	Created int64  `json:"created"`
 }
 
 type Model struct {
-	OpenAiBaseObject
+	baseObject
 	OwnedBy    string       `json:"owned_by"`
 	Permission []Permission `json:"permission"`
 	Root       string       `json:"root"`
@@ -15,7 +15,7 @@ type Model struct {
 }
 
 type Permission struct {
-	OpenAiBaseObject
+	baseObject
 	AllowCreateEngine  bool        `json:"allow_create_engine"`
 	AllowSampling      bool        `json:"allow_sampling"`
 	AllowLogprobs      bool        `json:"allow_logprobs"`
