@@ -32,7 +32,7 @@ func main() {
 		if len(os.Args) < 3 {
 			exit1("Usage: go run example.go completion <prompt>")
 		}
-		prompt := os.Args[2]
+		prompt := strings.Join(os.Args[2:], " ")
 		completion, err := api.GetCompletion(apiKey, prompt)
 		if err != nil {
 			exit1(fmt.Errorf("%s; error getting completion", err).Error())

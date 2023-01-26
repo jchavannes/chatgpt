@@ -9,4 +9,5 @@ It is meant to be imported into other projects.
 ```sh
 export OPENAI_API_KEY=ABC123
 go run example.go models
+go run example.go completion "who are you?"
 ```
