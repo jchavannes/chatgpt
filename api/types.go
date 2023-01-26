@@ -6,6 +6,22 @@ type baseObject struct {
 	Created int64  `json:"created"`
 }
 
+type Completion struct {
+	baseObject
+	Model   string `json:"model"`
+	Choices []struct {
+		Text         string      `json:"text"`
+		Index        int         `json:"index"`
+		Logprobs     interface{} `json:"logprobs"`
+		FinishReason string      `json:"finish_reason"`
+	} `json:"choices"`
+	Usage struct {
+		PromptTokens     int `json:"prompt_tokens"`
+		CompletionTokens int `json:"completion_tokens"`
+		TotalTokens      int `json:"total_tokens"`
+	} `json:"usage"`
+}
+
 type Model struct {
 	baseObject
 	OwnedBy    string       `json:"owned_by"`

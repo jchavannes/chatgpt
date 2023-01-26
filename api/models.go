@@ -7,9 +7,10 @@ import (
 )
 
 func GetModelList(apiKey string) ([]Model, error) {
-	resp, err := httpRequestWithHeaders("https://api.openai.com/v1/models", map[string]string{
-		"Authorization": "Bearer " + apiKey,
-	})
+	resp, err := HttpRequest{
+		Url:    UrlModels,
+		ApiKey: apiKey,
+	}.Get()
 	if err != nil {
 		return nil, fmt.Errorf("%w; error models api request", err)
 	}

@@ -1,27 +1,61 @@
 package api
 
 import (
+	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 )
 
-func httpRequestWithHeaders(url string, headers map[string]string) (string, error) {
-	req, err := http.NewRequest("GET", url, nil)
+const (
+	ModelTextDavinci003 = "text-davinci-003"
+)
+
+const (
+	UrlCompletions = "https://api.openai.com/v1/completions"
+	UrlModels      = "https://api.openai.com/v1/models"
+)
+
+type HttpRequest struct {
+	Url    string
+	Data   []byte
+	ApiKey string
+}
+
+func (r HttpRequest) Get() (string, error) {
+	resp, err := r.do(http.MethodGet)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%w; error get api request", err)
 	}
-	for k, v := range headers {
-		req.Header.Set(k, v)
+	return resp, nil
+}
+
+func (r HttpRequest) Post() (string, error) {
+	resp, err := r.do(http.MethodPost)
+	if err != nil {
+		return "", fmt.Errorf("%w; error post api request", err)
+	}
+	return resp, nil
+}
+
+func (r HttpRequest) do(method string) (string, error) {
+	req, err := http.NewRequest(method, r.Url, bytes.NewReader(r.Data))
+	if err != nil {
+		return "", fmt.Errorf("%w; error creating api request", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+r.ApiKey)
+	if len(r.Data) > 0 {
+		req.Header.Set("Content-Type", "application/json")
 	}
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%w; error executing api request", err)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%w; error reading api response", err)
 	}
 	return string(body), nil
 }
