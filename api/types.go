@@ -29,6 +29,19 @@ type File struct {
 	Purpose  string `json:"purpose"`
 }
 
+type FineTune struct {
+	baseObject
+	Model           string      `json:"model"`
+	FineTunedModel  string      `json:"fine_tuned_model"`
+	HyperParams     interface{} `json:"hyperparams"`
+	OrganizationId  string      `json:"organization_id"`
+	ResultFiles     []File      `json:"result_files"`
+	Status          string      `json:"status"`
+	ValidationFiles []File      `json:"validation_files"`
+	TrainingFiles   []File      `json:"training_files"`
+	UpdatedAt       int64       `json:"updated_at"`
+}
+
 type Model struct {
 	baseObject
 	OwnedBy    string       `json:"owned_by"`

@@ -71,6 +71,16 @@ func main() {
 			exit1(fmt.Errorf("%s; error api file delete", err).Error())
 		}
 		fmt.Printf("File deleted: %s\n", filename)
+	case "fine-tunes":
+		fineTunes, err := api.FineTuneList(apiKey)
+		if err != nil {
+			exit1(fmt.Errorf("%s; error getting fine tunes", err).Error())
+		}
+		fmt.Printf("Fine Tunes: %d\n", len(fineTunes))
+		for _, fineTune := range fineTunes {
+			fmt.Printf("Fine tune: %s - %s %s %s\n",
+				fineTune.Id, fineTune.Model, fineTune.Status, time.Unix(fineTune.UpdatedAt, 0).Format(time.RFC3339))
+		}
 	default:
 		exit1(fmt.Sprintf("Unknown command: %s", os.Args[1]))
 	}

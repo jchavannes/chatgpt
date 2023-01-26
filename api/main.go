@@ -15,6 +15,7 @@ const (
 const (
 	UrlCompletions = "https://api.openai.com/v1/completions"
 	UrlFiles       = "https://api.openai.com/v1/files"
+	UrlFineTunes   = "https://api.openai.com/v1/fine-tunes"
 	UrlModels      = "https://api.openai.com/v1/models"
 )
 
