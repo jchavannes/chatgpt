@@ -11,3 +11,8 @@ export OPENAI_API_KEY=ABC123
 go run example.go models
 go run example.go completion "who are you?"
 ```
+
+## Links
+
+- API Keys: https://beta.openai.com/account/api-keys
+- API Docs: https://beta.openai.com/docs/api-reference/introduction
