@@ -10,9 +10,11 @@ It is meant to be imported into other projects.
 export OPENAI_API_KEY=ABC123
 go run example.go models
 go run example.go completion "who are you?"
+go run example.go files
 ```
 
 ## Links
 
 - API Keys: https://beta.openai.com/account/api-keys
 - API Docs: https://beta.openai.com/docs/api-reference/introduction
+- Models: https://beta.openai.com/docs/models/overview

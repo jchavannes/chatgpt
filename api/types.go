@@ -22,6 +22,13 @@ type Completion struct {
 	} `json:"usage"`
 }
 
+type File struct {
+	baseObject
+	Bytes    int64  `json:"bytes"`
+	Filename string `json:"filename"`
+	Purpose  string `json:"purpose"`
+}
+
 type Model struct {
 	baseObject
 	OwnedBy    string       `json:"owned_by"`

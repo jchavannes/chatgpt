@@ -12,13 +12,17 @@ type CompletionRequest struct {
 	MaxTokens   int     `json:"max_tokens"`
 }
 
-func GetCompletion(apiKey string, prompt string) (*Completion, error) {
-	req := CompletionRequest{
-		Model:     ModelTextDavinci003,
-		Prompt:    prompt,
-		MaxTokens: 7,
+func GetDefaultCompletionRequest(prompt string) CompletionRequest {
+	return CompletionRequest{
+		Model:       ModelTextDavinci003,
+		Prompt:      prompt,
+		Temperature: 0,
+		MaxTokens:   64,
 	}
-	reqData, err := json.Marshal(req)
+}
+
+func GetCompletion(apiKey string, prompt string) (*Completion, error) {
+	reqData, err := json.Marshal(GetDefaultCompletionRequest(prompt))
 	if err != nil {
 		return nil, fmt.Errorf("%w; error json marshalling completion request", err)
 	}

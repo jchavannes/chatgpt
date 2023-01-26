@@ -40,6 +40,15 @@ func main() {
 		for _, choice := range completion.Choices {
 			fmt.Printf("Completion choice %d: %s\n", choice.Index, strings.TrimSpace(choice.Text))
 		}
+	case "files":
+		fileList, err := api.FileList(apiKey)
+		if err != nil {
+			exit1(fmt.Errorf("%s; error getting file list", err).Error())
+		}
+		fmt.Printf("Files: %d\n", len(fileList))
+		for _, file := range fileList {
+			fmt.Printf("File: %s\n", file.Filename)
+		}
 	default:
 		exit1(fmt.Sprintf("Unknown command: %s", os.Args[1]))
 	}

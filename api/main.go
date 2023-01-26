@@ -8,11 +8,13 @@ import (
 )
 
 const (
+	ModelTextAda001     = "text-ada-001"
 	ModelTextDavinci003 = "text-davinci-003"
 )
 
 const (
 	UrlCompletions = "https://api.openai.com/v1/completions"
+	UrlFiles       = "https://api.openai.com/v1/files"
 	UrlModels      = "https://api.openai.com/v1/models"
 )
 
