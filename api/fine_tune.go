@@ -18,7 +18,7 @@ func FineTuneList(apiKey string) ([]FineTune, error) {
 		Object string
 		Data   []FineTune
 	}
-	if err := json.Unmarshal([]byte(resp), &respObj); err != nil {
+	if err := json.Unmarshal(resp, &respObj); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling fine tunes api response", err)
 	}
 	return respObj.Data, nil
@@ -40,7 +40,7 @@ func FineTuneCreate(apiKey, filename string) (*FineTune, error) {
 		return nil, fmt.Errorf("%w; error fine tune create api request", err)
 	}
 	var respFineTune = new(FineTune)
-	if err := json.Unmarshal([]byte(resp), respFineTune); err != nil {
+	if err := json.Unmarshal(resp, respFineTune); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling fine tunes create api response", err)
 	}
 	return respFineTune, nil
@@ -58,7 +58,7 @@ func FineTuneCancel(apiKey, fineTuneId string) (*FineTune, error) {
 		return nil, fmt.Errorf("%w; error cancel fine tune api request", err)
 	}
 	var fineTune = new(FineTune)
-	if err := json.Unmarshal([]byte(resp), fineTune); err != nil {
+	if err := json.Unmarshal(resp, fineTune); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling cancel fine tune api response", err)
 	}
 	return fineTune, nil
@@ -76,7 +76,7 @@ func FineTuneEvents(apiKey, fineTuneId string) ([]Event, error) {
 		Object string
 		Data   []Event
 	}
-	if err := json.Unmarshal([]byte(resp), &respObj); err != nil {
+	if err := json.Unmarshal(resp, &respObj); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling fine tune events api response", err)
 	}
 	return respObj.Data, nil

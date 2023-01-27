@@ -31,7 +31,7 @@ func ImageCreate(apiKey, prompt string) (*Image, error) {
 		Data   []Image
 		Error  *Error
 	}
-	if err := json.Unmarshal([]byte(resp), &respObj); err != nil {
+	if err := json.Unmarshal(resp, &respObj); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling images create api response", err)
 	}
 	if respObj.Error != nil {

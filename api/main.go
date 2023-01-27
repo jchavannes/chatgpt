@@ -31,34 +31,34 @@ type HttpRequest struct {
 	ContentType string
 }
 
-func (r HttpRequest) Get() (string, error) {
+func (r HttpRequest) Get() ([]byte, error) {
 	resp, err := r.do(http.MethodGet)
 	if err != nil {
-		return "", fmt.Errorf("%w; error get api request", err)
+		return nil, fmt.Errorf("%w; error get api request", err)
 	}
 	return resp, nil
 }
 
-func (r HttpRequest) Delete() (string, error) {
+func (r HttpRequest) Delete() ([]byte, error) {
 	resp, err := r.do(http.MethodDelete)
 	if err != nil {
-		return "", fmt.Errorf("%w; error delete api request", err)
+		return nil, fmt.Errorf("%w; error delete api request", err)
 	}
 	return resp, nil
 }
 
-func (r HttpRequest) Post() (string, error) {
+func (r HttpRequest) Post() ([]byte, error) {
 	resp, err := r.do(http.MethodPost)
 	if err != nil {
-		return "", fmt.Errorf("%w; error post api request", err)
+		return nil, fmt.Errorf("%w; error post api request", err)
 	}
 	return resp, nil
 }
 
-func (r HttpRequest) do(method string) (string, error) {
+func (r HttpRequest) do(method string) ([]byte, error) {
 	req, err := http.NewRequest(method, r.Url, bytes.NewReader(r.Data))
 	if err != nil {
-		return "", fmt.Errorf("%w; error creating api request", err)
+		return nil, fmt.Errorf("%w; error creating api request", err)
 	}
 	req.Header.Set("Authorization", "Bearer "+r.ApiKey)
 	if len(r.Data) > 0 && r.ContentType == "" {
@@ -70,12 +70,12 @@ func (r HttpRequest) do(method string) (string, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("%w; error executing api request", err)
+		return nil, fmt.Errorf("%w; error executing api request", err)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", fmt.Errorf("%w; error reading api response", err)
+		return nil, fmt.Errorf("%w; error reading api response", err)
 	}
-	return string(body), nil
+	return body, nil
 }

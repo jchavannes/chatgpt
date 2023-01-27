@@ -23,13 +23,27 @@ func FileList(apiKey string) ([]File, error) {
 		Object string
 		Data   []File
 	}
-	if err := json.Unmarshal([]byte(resp), &respObj); err != nil {
+	if err := json.Unmarshal(resp, &respObj); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling files api response", err)
 	}
 	sort.Slice(respObj.Data, func(i, j int) bool {
 		return respObj.Data[i].Filename < respObj.Data[j].Filename
 	})
 	return respObj.Data, nil
+}
+
+func FileRetrieve(apiKey, fileId string) ([]byte, error) {
+	if !strings.HasPrefix(fileId, "file-") {
+		return nil, fmt.Errorf("invalid file id")
+	}
+	resp, err := HttpRequest{
+		Url:    UrlFiles + "/" + fileId + "/content",
+		ApiKey: apiKey,
+	}.Get()
+	if err != nil {
+		return nil, fmt.Errorf("%w; error delete file api request", err)
+	}
+	return resp, nil
 }
 
 func FileUpload(apiKey, filename string) (*File, error) {
@@ -59,20 +73,19 @@ func FileUpload(apiKey, filename string) (*File, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%w; error files upload api request", err)
 	}
-	fmt.Printf("resp: %s\n", resp)
 	var respFile = new(File)
-	if err := json.Unmarshal([]byte(resp), respFile); err != nil {
+	if err := json.Unmarshal(resp, respFile); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling file upload api response", err)
 	}
 	return respFile, nil
 }
 
-func FileDelete(apiKey, filename string) error {
-	if !strings.HasPrefix(filename, "file-") {
-		return fmt.Errorf("invalid filename")
+func FileDelete(apiKey, fileId string) error {
+	if !strings.HasPrefix(fileId, "file-") {
+		return fmt.Errorf("invalid file id")
 	}
 	resp, err := HttpRequest{
-		Url:    UrlFiles + "/" + filename,
+		Url:    UrlFiles + "/" + fileId,
 		ApiKey: apiKey,
 	}.Delete()
 	if err != nil {
@@ -82,7 +95,7 @@ func FileDelete(apiKey, filename string) error {
 		Object  string
 		Deleted bool
 	}
-	if err := json.Unmarshal([]byte(resp), &respObj); err != nil {
+	if err := json.Unmarshal(resp, &respObj); err != nil {
 		return fmt.Errorf("%w; error json unmarshalling delete file api response", err)
 	}
 	return nil

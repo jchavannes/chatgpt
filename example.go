@@ -5,7 +5,6 @@ import (
 	"github.com/jchavannes/chatgpt/api"
 	"os"
 	"strings"
-	"time"
 )
 
 const EnvOpenAiKey = "OPENAI_API_KEY"
@@ -26,7 +25,7 @@ func main() {
 		}
 		fmt.Printf("Models: %d\n", len(models))
 		for _, model := range models {
-			fmt.Printf("Model: %s - %s\n", model.Id, time.Unix(model.Created, 0).Format(time.RFC3339))
+			fmt.Println(model.Info())
 		}
 	case "completion":
 		if len(os.Args) < 3 {
@@ -64,13 +63,23 @@ func main() {
 		fmt.Println(file.Info())
 	case "delete":
 		if len(os.Args) < 3 || os.Args[2] == "" {
-			exit1("Usage: go run example.go delete <filename>")
+			exit1("Usage: go run example.go delete <file_id>")
 		}
-		filename := os.Args[2]
-		if err := api.FileDelete(apiKey, filename); err != nil {
+		fileId := os.Args[2]
+		if err := api.FileDelete(apiKey, fileId); err != nil {
 			exit1(fmt.Errorf("%w; error api file delete", err).Error())
 		}
-		fmt.Printf("File deleted: %s\n", filename)
+		fmt.Printf("File deleted: %s\n", fileId)
+	case "retrieve":
+		if len(os.Args) < 3 || os.Args[2] == "" {
+			exit1("Usage: go run example.go retrieve <file_id>")
+		}
+		fileId := os.Args[2]
+		contents, err := api.FileRetrieve(apiKey, fileId)
+		if err != nil {
+			exit1(fmt.Errorf("%w; error api file retrieve", err).Error())
+		}
+		os.Stdout.Write(contents)
 	case "fine-tunes":
 		fineTunes, err := api.FineTuneList(apiKey)
 		if err != nil {

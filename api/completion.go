@@ -28,7 +28,7 @@ func GetCompletion(apiKey string, prompt string) (*Completion, error) {
 		return nil, fmt.Errorf("%w; error models api request", err)
 	}
 	var completion = new(Completion)
-	if err := json.Unmarshal([]byte(resp), completion); err != nil {
+	if err := json.Unmarshal(resp, completion); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling models api response", err)
 	}
 	return completion, nil

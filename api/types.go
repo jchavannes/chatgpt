@@ -83,7 +83,15 @@ type Model struct {
 	OwnedBy    string       `json:"owned_by"`
 	Permission []Permission `json:"permission"`
 	Root       string       `json:"root"`
-	Parent     *Model       `json:"parent"`
+	Parent     string       `json:"parent"`
+}
+
+func (m Model) Info() string {
+	var parent string
+	if m.Parent != "" {
+		parent = " (parent: " + m.Parent + ")"
+	}
+	return fmt.Sprintf("Model: %s - %s%s", m.Id, time.Unix(m.Created, 0).Format(time.RFC3339), parent)
 }
 
 type Permission struct {

@@ -18,7 +18,7 @@ func GetModelList(apiKey string) ([]Model, error) {
 		Object string
 		Data   []Model
 	}
-	if err := json.Unmarshal([]byte(resp), &respObj); err != nil {
+	if err := json.Unmarshal(resp, &respObj); err != nil {
 		return nil, fmt.Errorf("%w; error json unmarshalling models api response", err)
 	}
 	sort.Slice(respObj.Data, func(i, j int) bool {
