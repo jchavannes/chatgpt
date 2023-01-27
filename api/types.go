@@ -33,6 +33,10 @@ type Event struct {
 	Message string `json:"message"`
 }
 
+func (e Event) Info() string {
+	return fmt.Sprintf("Event: %s %s %s", e.Object, e.Level, e.Message)
+}
+
 type File struct {
 	baseObject
 	Bytes    int64  `json:"bytes"`

@@ -63,3 +63,21 @@ func FineTuneCancel(apiKey, fineTuneId string) (*FineTune, error) {
 	}
 	return fineTune, nil
 }
+
+func FineTuneEvents(apiKey, fineTuneId string) ([]Event, error) {
+	resp, err := HttpRequest{
+		Url:    UrlFineTunes + "/" + fineTuneId + "/events",
+		ApiKey: apiKey,
+	}.Get()
+	if err != nil {
+		return nil, fmt.Errorf("%w; error fine tune events api request", err)
+	}
+	var respObj struct {
+		Object string
+		Data   []Event
+	}
+	if err := json.Unmarshal([]byte(resp), &respObj); err != nil {
+		return nil, fmt.Errorf("%w; error json unmarshalling fine tune events api response", err)
+	}
+	return respObj.Data, nil
+}

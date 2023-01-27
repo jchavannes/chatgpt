@@ -91,7 +91,7 @@ func main() {
 		}
 		fmt.Println(fineTune.Info())
 		for _, event := range fineTune.Events {
-			fmt.Printf("Event: %s %s %s\n", event.Object, event.Level, event.Message)
+			fmt.Println(event.Info())
 		}
 	case "fine-tune-cancel":
 		if len(os.Args) < 3 || os.Args[2] == "" {
@@ -103,6 +103,19 @@ func main() {
 			exit1(fmt.Errorf("%w; error api file delete", err).Error())
 		}
 		fmt.Println(fineTune.Info())
+	case "fine-tune-events":
+		if len(os.Args) < 3 || os.Args[2] == "" {
+			exit1("Usage: go run example.go fine-tune-events <fine_tune_id>")
+		}
+		fineTuneId := os.Args[2]
+		events, err := api.FineTuneEvents(apiKey, fineTuneId)
+		if err != nil {
+			exit1(fmt.Errorf("%w; error getting fine tune events", err).Error())
+		}
+		fmt.Printf("Fine Tune Events: %d\n", len(events))
+		for _, event := range events {
+			fmt.Println(event.Info())
+		}
 	default:
 		exit1(fmt.Sprintf("Unknown command: %s", os.Args[1]))
 	}
