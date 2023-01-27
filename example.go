@@ -22,7 +22,7 @@ func main() {
 	case "models":
 		models, err := api.GetModelList(apiKey)
 		if err != nil {
-			exit1(fmt.Errorf("%s; error getting model list", err).Error())
+			exit1(fmt.Errorf("%w; error getting model list", err).Error())
 		}
 		fmt.Printf("Models: %d\n", len(models))
 		for _, model := range models {
@@ -35,7 +35,7 @@ func main() {
 		prompt := strings.Join(os.Args[2:], " ")
 		completion, err := api.GetCompletion(apiKey, prompt)
 		if err != nil {
-			exit1(fmt.Errorf("%s; error getting completion", err).Error())
+			exit1(fmt.Errorf("%w; error getting completion", err).Error())
 		}
 		for _, choice := range completion.Choices {
 			fmt.Printf("Completion choice %d: %s\n", choice.Index, strings.TrimSpace(choice.Text))
@@ -43,7 +43,7 @@ func main() {
 	case "files":
 		fileList, err := api.FileList(apiKey)
 		if err != nil {
-			exit1(fmt.Errorf("%s; error getting file list", err).Error())
+			exit1(fmt.Errorf("%w; error getting file list", err).Error())
 		}
 		fmt.Printf("Files: %d\n", len(fileList))
 		for _, file := range fileList {
@@ -59,7 +59,7 @@ func main() {
 		}
 		file, err := api.FileUpload(apiKey, filename)
 		if err != nil {
-			exit1(fmt.Errorf("%s; error api file upload", err).Error())
+			exit1(fmt.Errorf("%w; error api file upload", err).Error())
 		}
 		fmt.Printf("File: %s - %s\n", file.Id, file.Filename)
 	case "delete":
@@ -68,13 +68,13 @@ func main() {
 		}
 		filename := os.Args[2]
 		if err := api.FileDelete(apiKey, filename); err != nil {
-			exit1(fmt.Errorf("%s; error api file delete", err).Error())
+			exit1(fmt.Errorf("%w; error api file delete", err).Error())
 		}
 		fmt.Printf("File deleted: %s\n", filename)
 	case "fine-tunes":
 		fineTunes, err := api.FineTuneList(apiKey)
 		if err != nil {
-			exit1(fmt.Errorf("%s; error getting fine tunes", err).Error())
+			exit1(fmt.Errorf("%w; error getting fine tunes", err).Error())
 		}
 		fmt.Printf("Fine Tunes: %d\n", len(fineTunes))
 		for _, fineTune := range fineTunes {
