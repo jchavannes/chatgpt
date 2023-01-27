@@ -27,6 +27,13 @@ type Completion struct {
 	} `json:"usage"`
 }
 
+type Error struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Param   string `json:"param"`
+	Type    string `json:"type"`
+}
+
 type Event struct {
 	baseObject
 	Level   string `json:"level"`
@@ -67,6 +74,10 @@ func (f FineTune) Info() string {
 		f.Id, f.Model, f.Status, time.Unix(f.UpdatedAt, 0).Format(time.RFC3339))
 }
 
+type Image struct {
+	Url string `json:"url"`
+}
+
 type Model struct {
 	baseObject
 	OwnedBy    string       `json:"owned_by"`
@@ -97,4 +108,10 @@ type CompletionRequest struct {
 
 type FineTuneCreateRequest struct {
 	TrainingFile string `json:"training_file"`
+}
+
+type ImageRequest struct {
+	Prompt string `json:"prompt"`
+	N      int    `json:"n"`
+	Size   string `json:"size"`
 }

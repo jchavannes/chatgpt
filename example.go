@@ -116,6 +116,16 @@ func main() {
 		for _, event := range events {
 			fmt.Println(event.Info())
 		}
+	case "image":
+		if len(os.Args) < 3 {
+			exit1("Usage: go run example.go image <prompt>")
+		}
+		prompt := strings.Join(os.Args[2:], " ")
+		image, err := api.ImageCreate(apiKey, prompt)
+		if err != nil {
+			exit1(fmt.Errorf("%w; error getting image create", err).Error())
+		}
+		fmt.Printf("Image: %s\n", image.Url)
 	default:
 		exit1(fmt.Sprintf("Unknown command: %s", os.Args[1]))
 	}
