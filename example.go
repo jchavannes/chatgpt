@@ -47,7 +47,7 @@ func main() {
 		}
 		fmt.Printf("Files: %d\n", len(fileList))
 		for _, file := range fileList {
-			fmt.Printf("File: %s - %s (%d)\n", file.Id, file.Filename, file.Bytes)
+			fmt.Println(file.Info())
 		}
 	case "upload":
 		if len(os.Args) < 3 || os.Args[2] == "" {
@@ -61,7 +61,7 @@ func main() {
 		if err != nil {
 			exit1(fmt.Errorf("%w; error api file upload", err).Error())
 		}
-		fmt.Printf("File: %s - %s\n", file.Id, file.Filename)
+		fmt.Println(file.Info())
 	case "delete":
 		if len(os.Args) < 3 || os.Args[2] == "" {
 			exit1("Usage: go run example.go delete <filename>")
@@ -78,8 +78,7 @@ func main() {
 		}
 		fmt.Printf("Fine Tunes: %d\n", len(fineTunes))
 		for _, fineTune := range fineTunes {
-			fmt.Printf("Fine tune: %s - %s %s %s\n",
-				fineTune.Id, fineTune.Model, fineTune.Status, time.Unix(fineTune.UpdatedAt, 0).Format(time.RFC3339))
+			fmt.Println(fineTune.Info())
 		}
 	case "fine-tune-create":
 		if len(os.Args) < 3 || os.Args[2] == "" {
@@ -90,11 +89,20 @@ func main() {
 		if err != nil {
 			exit1(fmt.Errorf("%w; error getting fine tunes", err).Error())
 		}
-		fmt.Printf("Fine tune: %s - %s %s %s\n",
-			fineTune.Id, fineTune.Model, fineTune.Status, time.Unix(fineTune.UpdatedAt, 0).Format(time.RFC3339))
+		fmt.Println(fineTune.Info())
 		for _, event := range fineTune.Events {
 			fmt.Printf("Event: %s %s %s\n", event.Object, event.Level, event.Message)
 		}
+	case "fine-tune-cancel":
+		if len(os.Args) < 3 || os.Args[2] == "" {
+			exit1("Usage: go run example.go fine-tune-cancel <fine_tune_id>")
+		}
+		fineTuneId := os.Args[2]
+		fineTune, err := api.FineTuneCancel(apiKey, fineTuneId)
+		if err != nil {
+			exit1(fmt.Errorf("%w; error api file delete", err).Error())
+		}
+		fmt.Println(fineTune.Info())
 	default:
 		exit1(fmt.Sprintf("Unknown command: %s", os.Args[1]))
 	}

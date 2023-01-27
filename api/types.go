@@ -1,5 +1,10 @@
 package api
 
+import (
+	"fmt"
+	"time"
+)
+
 type baseObject struct {
 	Id      string `json:"id"`
 	Object  string `json:"object"`
@@ -35,6 +40,10 @@ type File struct {
 	Purpose  string `json:"purpose"`
 }
 
+func (f File) Info() string {
+	return fmt.Sprintf("File: %s - %s (%d)", f.Id, f.Filename, f.Bytes)
+}
+
 type FineTune struct {
 	baseObject
 	Model           string      `json:"model"`
@@ -47,6 +56,11 @@ type FineTune struct {
 	TrainingFiles   []File      `json:"training_files"`
 	UpdatedAt       int64       `json:"updated_at"`
 	Events          []Event     `json:"events"`
+}
+
+func (f FineTune) Info() string {
+	return fmt.Sprintf("Fine tune: %s - %s %s %s",
+		f.Id, f.Model, f.Status, time.Unix(f.UpdatedAt, 0).Format(time.RFC3339))
 }
 
 type Model struct {
@@ -68,4 +82,15 @@ type Permission struct {
 	Organization       string      `json:"organization"`
 	Group              interface{} `json:"group"`
 	IsBlocking         bool        `json:"is_blocking"`
+}
+
+type CompletionRequest struct {
+	Model       string  `json:"model"`
+	Prompt      string  `json:"prompt"`
+	Temperature float64 `json:"temperature"`
+	MaxTokens   int     `json:"max_tokens"`
+}
+
+type FineTuneCreateRequest struct {
+	TrainingFile string `json:"training_file"`
 }

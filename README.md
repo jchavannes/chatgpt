@@ -11,6 +11,11 @@ export OPENAI_API_KEY=ABC123
 go run example.go models
 go run example.go completion "who are you?"
 go run example.go files
+go run example.go upload test.jsonl
+go run example.go delete file-xxx
+go run example.go fine-tunes
+go run example.go fine-tune-create file-xxx
+go run example.go fine-tune-cancel ft-xxx
 ```
 
 ## Links
