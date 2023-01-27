@@ -22,6 +22,12 @@ type Completion struct {
 	} `json:"usage"`
 }
 
+type Event struct {
+	baseObject
+	Level   string `json:"level"`
+	Message string `json:"message"`
+}
+
 type File struct {
 	baseObject
 	Bytes    int64  `json:"bytes"`
@@ -40,6 +46,7 @@ type FineTune struct {
 	ValidationFiles []File      `json:"validation_files"`
 	TrainingFiles   []File      `json:"training_files"`
 	UpdatedAt       int64       `json:"updated_at"`
+	Events          []Event     `json:"events"`
 }
 
 type Model struct {

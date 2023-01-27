@@ -81,6 +81,20 @@ func main() {
 			fmt.Printf("Fine tune: %s - %s %s %s\n",
 				fineTune.Id, fineTune.Model, fineTune.Status, time.Unix(fineTune.UpdatedAt, 0).Format(time.RFC3339))
 		}
+	case "fine-tune-create":
+		if len(os.Args) < 3 || os.Args[2] == "" {
+			exit1("Usage: go run example.go fine-tune-create <filename>")
+		}
+		filename := os.Args[2]
+		fineTune, err := api.FineTuneCreate(apiKey, filename)
+		if err != nil {
+			exit1(fmt.Errorf("%w; error getting fine tunes", err).Error())
+		}
+		fmt.Printf("Fine tune: %s - %s %s %s\n",
+			fineTune.Id, fineTune.Model, fineTune.Status, time.Unix(fineTune.UpdatedAt, 0).Format(time.RFC3339))
+		for _, event := range fineTune.Events {
+			fmt.Printf("Event: %s %s %s\n", event.Object, event.Level, event.Message)
+		}
 	default:
 		exit1(fmt.Sprintf("Unknown command: %s", os.Args[1]))
 	}
