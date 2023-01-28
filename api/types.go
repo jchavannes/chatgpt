@@ -25,6 +25,7 @@ type Completion struct {
 		CompletionTokens int `json:"completion_tokens"`
 		TotalTokens      int `json:"total_tokens"`
 	} `json:"usage"`
+	Error *Error `json:"error"`
 }
 
 type Error struct {

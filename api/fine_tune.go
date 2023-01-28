@@ -24,9 +24,9 @@ func FineTuneList(apiKey string) ([]FineTune, error) {
 	return respObj.Data, nil
 }
 
-func FineTuneCreate(apiKey, filename string) (*FineTune, error) {
+func FineTuneCreate(apiKey, fileId string) (*FineTune, error) {
 	reqData, err := json.Marshal(FineTuneCreateRequest{
-		TrainingFile: filename,
+		TrainingFile: fileId,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("%w; error json marshalling fine tune create request", err)

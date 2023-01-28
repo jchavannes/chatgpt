@@ -48,9 +48,9 @@ func main() {
 		for _, file := range fileList {
 			fmt.Println(file.Info())
 		}
-	case "upload":
+	case "file-upload":
 		if len(os.Args) < 3 || os.Args[2] == "" {
-			exit1("Usage: go run example.go upload <filepath>")
+			exit1("Usage: go run example.go file-upload <filepath>")
 		}
 		filename := os.Args[2]
 		if len(filename) < 7 || filename[len(filename)-6:] != ".jsonl" {
@@ -61,18 +61,18 @@ func main() {
 			exit1(fmt.Errorf("%w; error api file upload", err).Error())
 		}
 		fmt.Println(file.Info())
-	case "delete":
+	case "file-delete":
 		if len(os.Args) < 3 || os.Args[2] == "" {
-			exit1("Usage: go run example.go delete <file_id>")
+			exit1("Usage: go run example.go file-delete <file_id>")
 		}
 		fileId := os.Args[2]
 		if err := api.FileDelete(apiKey, fileId); err != nil {
 			exit1(fmt.Errorf("%w; error api file delete", err).Error())
 		}
 		fmt.Printf("File deleted: %s\n", fileId)
-	case "retrieve":
+	case "file-retrieve":
 		if len(os.Args) < 3 || os.Args[2] == "" {
-			exit1("Usage: go run example.go retrieve <file_id>")
+			exit1("Usage: go run example.go file-retrieve <file_id>")
 		}
 		fileId := os.Args[2]
 		contents, err := api.FileRetrieve(apiKey, fileId)
@@ -91,12 +91,12 @@ func main() {
 		}
 	case "fine-tune-create":
 		if len(os.Args) < 3 || os.Args[2] == "" {
-			exit1("Usage: go run example.go fine-tune-create <filename>")
+			exit1("Usage: go run example.go fine-tune-create <file_id>")
 		}
-		filename := os.Args[2]
-		fineTune, err := api.FineTuneCreate(apiKey, filename)
+		fileId := os.Args[2]
+		fineTune, err := api.FineTuneCreate(apiKey, fileId)
 		if err != nil {
-			exit1(fmt.Errorf("%w; error getting fine tunes", err).Error())
+			exit1(fmt.Errorf("%w; error fine tune create", err).Error())
 		}
 		fmt.Println(fineTune.Info())
 		for _, event := range fineTune.Events {
@@ -109,7 +109,7 @@ func main() {
 		fineTuneId := os.Args[2]
 		fineTune, err := api.FineTuneCancel(apiKey, fineTuneId)
 		if err != nil {
-			exit1(fmt.Errorf("%w; error api file delete", err).Error())
+			exit1(fmt.Errorf("%w; error api fine tune cancel", err).Error())
 		}
 		fmt.Println(fineTune.Info())
 	case "fine-tune-events":
